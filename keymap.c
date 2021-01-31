@@ -18,6 +18,11 @@ enum layer {
 #define MC_LCMD KC_LGUI
 #define MC_RCMD KC_RGUI
 
+// key combos
+enum macro_keycodes {
+  XC_BLD,
+  XC_RUN
+};
 
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   [_BASE] = LAYOUT_65_with_macro(
@@ -30,7 +35,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 // ├────────┼────────┤  ├───────────────┴─────┬──┴─────┬──┴─────┬──┴─────┬──┴─────┬──┴─────┐  └─────┬──┴─────┬──┴─────┬──┴─────┬──┴─────┬──┴─────┬──┴──────────┬────────┼────────┤
     KC_F6,   KC_F8,      KC_LSFT,              KC_Z,    KC_X,    KC_C,    KC_V,    KC_B,             KC_N,    KC_M,    KC_COMM, KC_DOT,  KC_SLSH, KC_RSFT,      KC_UP,   KC_PGDN, \
 // ├────────┼────────┤  ├──────────┬──────────┴┬───────┴──┬─────┴─────┬──┴────────┴────────┤        ├────────┴────────┴────┬───┴────┬───┴────┬───┴────┬────────┼────────┼────────┤
-    KC_F8,   KC_F9,      MO(_FN1),  KC_LCTRL,   KC_LOPT,   MC_LCMD,    KC_BSPC,                      _______, KC_SPC,       MC_RCMD, KC_ROPT, _______, KC_LEFT, KC_DOWN, KC_RGHT
+   M(XC_BLD),M(XC_RUN),  MO(_FN1),  KC_LCTRL,   KC_LOPT,   MC_LCMD,    KC_BSPC,                      _______, KC_SPC,       MC_RCMD, KC_ROPT, _______, KC_LEFT, KC_DOWN, KC_RGHT
 // └────────┴────────┘  └──────────┴───────────┴──────────┴───────────┴────────────────────┘        └──────────────────────┴────────┴────────┘        └────────┴────────┴────────┘
   ),
 
@@ -64,4 +69,18 @@ void encoder_update_user(uint8_t index, bool clockwise) {
             tap_code(KC_VOLD);
         }
     }
+}
+
+const macro_t *action_get_macro(keyrecord_t *record, uint8_t id, uint8_t opt) {
+    if (!eeconfig_is_enabled()) {
+        eeconfig_init();
+    }
+
+    switch (id) {
+        case XC_BLD: 
+            return record->event.pressed ? MACRO( DOWN(MC_LCMD), TYPE(KC_B), UP(MC_LCMD), END ) : MACRO_NONE;
+        case XC_RUN:
+            return record->event.pressed ? MACRO( DOWN(MC_LCMD), TYPE(KC_R), UP(MC_LCMD), END ) : MACRO_NONE;
+    }
+    return MACRO_NONE;
 }
