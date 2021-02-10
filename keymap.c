@@ -8,6 +8,12 @@ enum layer {
     _BASE,
     _FN1,
     // EMOJI
+    _LAYERS_END, // last layer
+};
+
+enum encoders {
+  _ENC_L,
+  _ENC_R,
 };
 
 
@@ -52,19 +58,24 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   )
 };
 
+const uint16_t encodermaps[][2][2] = {
+  [_BASE] = {
+    [_ENC_L] = { KC_UP,   KC_DOWN },
+    [_ENC_R] = { KC_VOLD, KC_VOLU },
+  },
+  [_FN1] = {
+    [_ENC_L] = { KC_PGUP, KC_PGDN },
+    [_ENC_R] = { KC_VOLD, KC_VOLU },
+  },
+            // CCW,     CW
+};
+
 void encoder_update_user(uint8_t index, bool clockwise) {
-    if (index == 0) {
-        if (clockwise) {
-            tap_code(KC_UP);
-        } else {
-            tap_code(KC_DOWN);
-        }
+  for (int l = 0; l < _LAYERS_END; l++) {
+    if (layer_state_is(l)) {
+      uint16_t code = encodermaps[l][index][clockwise];
+      tap_code(code);
+      return;
     }
-    else if (index == 1) {
-        if (clockwise) {
-            tap_code(KC_VOLU);
-        } else {
-            tap_code(KC_VOLD);
-        }
-    }
+  }
 }
