@@ -37,7 +37,7 @@ enum tapdance {
 // spotlight / alphred
 #define SPOT LCMD(KC_SPC)
 // mute with mutekey
-#define MUTE LGUI(S(KC_W))
+#define MUTE LCTL(S(KC_M))
 
 // debugger commands
 #define D_RES KC_F5
