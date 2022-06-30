@@ -39,9 +39,27 @@ enum tapdance {
 // mute with mutekey
 #define MUTE LCTL(S(KC_M))
 
+// brightness up/down for the encoder.
+#define BR_UP KC_SLCK
+#define BR_DOWN KC_PAUS
+
 // debugger commands
 #define D_RES KC_F5
 #define D_STP KC_F10
+
+
+// possible encoder params:
+// brightness up/down
+// volume up/down     + mute
+
+// possible macros
+// emoji popup
+// spotlight
+// debugger next/resume
+// mute mic
+// music prev/next
+// must play/pause
+// do not disturb / focus mode toggle
 
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   [_BASE] = LAYOUT_65_with_macro(
@@ -88,15 +106,17 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
 };
 
-const uint16_t encodermaps[][2] = {
-  [_ENC_L] = { KC_UP,   KC_DOWN },
-  [_ENC_R] = { KC_VOLD, KC_VOLU },
+
+#if defined(ENCODER_MAP_ENABLE)
+
+#define NUMENCODERS 2
+
+const uint16_t PROGMEM encoder_map[][NUM_ENCODERS][2] = {
+  [_BASE] = { ENCODER_CCW_CW(BR_UP,   BR_DOWN), ENCODER_CCW_CW(KC_VOLD, KC_VOLU) },
+  [_MOD] =  { ENCODER_CCW_CW(KC_VOLD, KC_VOLU), ENCODER_CCW_CW(BR_UP,   BR_DOWN) },
 };
 
-void encoder_update_user(uint8_t index, bool clockwise) {
-  uint16_t code = encodermaps[index][clockwise];
-  tap_code(code);
-}
+#endif
 
 
 //void dance_layer_finished(qk_tap_dance_state_t* state, void* user_data)
